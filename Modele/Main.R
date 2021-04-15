@@ -18,12 +18,13 @@ source("Get_Province.R")
 # Inputs
 ########################################
 
-input_demand <- 100000
+input_demand <- 250
 input_product <- "carrot"
 input_lat <- 50
 input_lon <- 5
 input_time <- "december"
 input_production_mode <- "organic"
+#frais ou transfo
 
 
 
