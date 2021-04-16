@@ -13,48 +13,53 @@ source("Data definition.R")
 source("Get_Production.R")
 source("Get_Province.R")
 source("Get_Production_Monthly.R")
+source("Inputs.R")
 
 
 ########################################
-# Inputs 
+# Inputs transformation
 ########################################
 
-input_demand <- 200
-input_legume <- "carrot"
-input_lat <- 50.66
-input_lon <- 4.54
-input_time <- "december"
-input_production_mode <- "organic"
-input_transformation <- "processed"
+# yealds :
+yealds_id <- (impacts %>% 
+                filter(name == "Rendements")
+              )$id_impact
 
-# transformation into id :
-yealds_id <- (impacts %>% filter(name == "Rendements"))$id_impact
-input_legume_id <- (legumes%>% filter(name == input_legume))$id_legume
-input_production_mode_id <- (production_modes %>% filter(name == input_production_mode))$id_mode
-input_transformation_id <- (transformation %>% filter(transformation == input_transformation))$id_transformation
+# legumes
+input_legume_id <- (legumes%>% 
+                      filter(name == input_legume)
+                    )$id_legume
 
-input_product_id <- (repartition_modes %>% filter(id_mode == input_production_mode_id,
-                                                  id_transformation == input_transformation_id,
-                                                  id_legume == input_legume_id))$id_product
+# production modes
+input_production_mode_id <- (production_modes %>% 
+                               filter(name == input_production_mode)
+                             )$id_mode
+
+# transformations
+input_transformation_id <- (transformation %>% 
+                              filter(transformation == input_transformation)
+                            )$id_transformation
+
+# product
+input_product_id <- (repartition_modes %>% 
+                       filter(id_mode == input_production_mode_id,
+                              id_transformation == input_transformation_id,
+                              id_legume == input_legume_id)
+                     )$id_product
+
+########################################
+# Get Production
+########################################
+# 1. Variables definition
 
 #Find nearest province
 province_order <- GetProvince(input_lon, input_lat)
-#input_province <- province_order[1,1]
-#input_province_id <- (provinces %>% filter(name == input_province))$id_province
-
-
-#Get Production
-production_annual  <- get_production(input_legume_id, input_province_id)
-production_monthly <- get_production_monthly(input_legume_id, production_annual)
-
-
-
-
+temp_province_order <- 1
+# various
 end = FALSE
 total_offer <- 0
-temp_province_order <- 1
 
-# 2. loop
+# 2. Loop
 while (end == FALSE)
 { 
   input_localisation <- province_order[temp_province_order,1]
@@ -94,7 +99,18 @@ while (end == FALSE)
   }
 }
 
-
-
+########################################
+# Get Impacts
+########################################
+i = 0
+while (i < 5){
+  if (i == 2){
+    print("T")
+  }
+  else{
+    print("F")
+  }
+  i = i+1
+}
 
       

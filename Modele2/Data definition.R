@@ -30,7 +30,7 @@ months <- c("january", "february", "march", "april", "may", "june", "july", "aug
 ########################################
 
 #Pathway : copy & paste here the database pathway
-pathway = "Database projet.xlsx"
+pathway = "Database projet v2.xlsx"
 
 surfaces <- read_xlsx(pathway, sheet="surfaces")
 provinces <- read_xlsx(pathway, sheet="provinces")
@@ -46,6 +46,7 @@ production_impacts <- read_xlsx(pathway, sheet="production_impacts")
 # Process the datatables
 ########################################
 
-
+impact_data <- merge(production_impacts, impacts, by.x = "id_impact", by.y = "id_impact") %>%  
+  select(-name)
 
 
