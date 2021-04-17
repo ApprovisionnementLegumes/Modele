@@ -68,7 +68,7 @@ while (end == FALSE)
   
   offer <- get_production(input_legume_id,
                           input_localisation)
-  print(offer)
+  #print(offer)
   #offer <- get_production_monthly(input_legume_id,offer)
   
   total_offer <- total_offer + offer
@@ -102,15 +102,4 @@ while (end == FALSE)
 ########################################
 # Get Impacts
 ########################################
-i = 0
-while (i < 5){
-  if (i == 2){
-    print("T")
-  }
-  else{
-    print("F")
-  }
-  i = i+1
-}
 
-      

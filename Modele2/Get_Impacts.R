@@ -1,4 +1,15 @@
-get_impacts <- function(id_product,production,surface){
+get_impacts <- function(input_product_id,production, input_province_id){
+  
+  # look to the purcentage of surface attributed to the product
+  # ex : there is 75% of the carrot surface attributed to the reasoned conventionnal agric.
+  specific_purcent <- (repartition_modes %>% filter(id_product == input_product_id))$"%"
+  
+  # look for the legume of the product
+  legume <- (repartition_modes %>% filter(id_product == input_product_id))$id_legume
+  
+  # calculate the surface 
+  specific_surface <- specific_purcent*(surfaces %>% filter(id_legume == legume,
+                                                            id_province == input_province_id))$surface
   
   list_impact = data.frame(name = c(), value = c(), units = c())
   
@@ -13,15 +24,13 @@ get_impacts <- function(id_product,production,surface){
     
     print(paste0("Impact on ", impact_name))
     
-    #IMPLEMENTER LES POURCENTAGES???
-    
     if (impact_units2 == "kg")
       {
       impact_value_final <- impact_value*production/1000 #divide by 1000 because production is in t
       }
     else if (impact_units2 == "ha")
       {
-      impact_value_final <- impact_value*surface
+      impact_value_final <- impact_value*specific_surface
       }
     else{
       print("Error, units not found")
@@ -38,7 +47,5 @@ get_impacts <- function(id_product,production,surface){
 }
 
 
-impact_id = 1
 production = 100
-surface = 100
-print(get_impacts(3, 100, 120))
+print(get_impacts(3, 100, 1))
