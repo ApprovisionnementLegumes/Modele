@@ -66,7 +66,7 @@ while (end == FALSE)
   input_localisation_name = (provinces %>% filter(id_province == input_localisation))$name
   print(paste0("Searching in ", input_localisation_name))
   
-  offer <- get_production(input_legume_id,
+  offer <- get_production(input_product_id,
                           input_localisation)
   #print(offer)
   #offer <- get_production_monthly(input_legume_id,offer)
