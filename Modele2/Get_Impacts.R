@@ -46,6 +46,4 @@ get_impacts <- function(input_product_id,production, input_province_id){
   return(list_impact)
 }
 
-
-production = 100
-print(get_impacts(3, 100, 1))
+test = (get_impacts(15,200,1))

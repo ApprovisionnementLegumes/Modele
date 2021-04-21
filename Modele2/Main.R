@@ -14,6 +14,7 @@ source("Get_Production.R")
 source("Get_Province.R")
 source("Get_Production_Monthly.R")
 source("Inputs.R")
+source("Get_Impacts.R")
 
 
 ########################################
@@ -102,4 +103,4 @@ while (end == FALSE)
 ########################################
 # Get Impacts
 ########################################
-
+#impact_output <- get_impacts(input_product_id, total_offer, input_province_id)
