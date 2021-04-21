@@ -1,4 +1,4 @@
-get_production <- function(input_product_id, input_province_id){
+get_production <- function(input_product_id, input_province_id, yealds_id){
   
   # look to the purcentage of surface attributed to the product
   # ex : there is 75% of the carrot surface attributed to the reasoned conventionnal agric.
