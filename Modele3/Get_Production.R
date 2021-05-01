@@ -3,6 +3,9 @@
 #==============================
 
 get_production <- function(input_product_id, input_localisation, yealds_id){
+  #=============================================================
+  # Return the production of a given product in a given province
+  #=============================================================
   
   # look to the purcentage of surface attributed to the product
   # ex : there is 75% of the carrot surface attributed to the reasoned conventionnal agric.
@@ -36,6 +39,11 @@ get_production_fresh <- function(input_product_id, yealds_id, input_demand, prov
   temp_province_order <- 1  # take the value of the province during the iteration
   end = FALSE               # if end is true, while loop ends
   total_offer <- 0          # total_offer initialization
+  status <- NULL
+  
+  list_production <- data.frame(province = c(),
+                                production = c(),
+                                status = c())
   
   while(end == FALSE){
     input_localisation <- province_order[temp_province_order,1]
@@ -49,11 +57,13 @@ get_production_fresh <- function(input_product_id, yealds_id, input_demand, prov
     total_offer <- total_offer + offer
     
     if(total_offer >= input_demand)
-    { output_list = list(input_localisation_name, total_offer, input_demand)
-      print(paste0("There is enough in ", input_localisation_name, 
-                    ". Current offer is ",total_offer,
-                    "t while the demand is ",input_demand,"t."))
+    {
+    #output_list = list(input_localisation_name, total_offer, input_demand)
+    #print(paste0("There is enough in ", input_localisation_name, ". Current offer is ",total_offer,"t while the demand is ",input_demand,"t."))
+    status <- paste0("There is enough in ", input_localisation_name)
+    
     end = TRUE
+    
     }
     
     else
@@ -61,21 +71,35 @@ get_production_fresh <- function(input_product_id, yealds_id, input_demand, prov
       if (temp_province_order >= length(province_order[,1]))
       {
         end = TRUE
-        print("There is not enough production in Wallonia for your request.")
+        #print("There is not enough production in Wallonia for your request.")
+        status <- "There is not enough production in Wallonia for your request."
       }
       else
       {
-        print(paste0("There is not enough in ", input_localisation_name,", let's search in neighboring provinces."))
-        print(paste0("demand : ", input_demand, " | total offer : ",total_offer))
+        #print(paste0("There is not enough in ", input_localisation_name,", let's search in neighboring provinces."))
+        #print(paste0("demand : ", input_demand, " | total offer : ",total_offer))
+        status <- paste0("There is not enough in ", input_localisation_name)
+      
       }
       
       temp_province_order <- temp_province_order + 1
     }
+    
+    #==========================
+    # Encodage & sauvegarde
+    #==========================
+    
+    temp <- data.frame(name = input_localisation_name,
+                       production = offer,
+                       status = status)
+    
+    list_production <- rbind(list_production, temp)
+    
   }
-  return(total_offer)
+  return(list_production)
 }
 
-#get_production_fresh(15,1,9,5,province_order)
+get_production_fresh(15,9,100,province_order, harvest_time, conservation_time)
 
 #==============================
 # GET PRODUCTION TRANSFORMED
@@ -84,8 +108,13 @@ get_production_fresh <- function(input_product_id, yealds_id, input_demand, prov
 get_production_transform <- function(input_product_id, yealds_id, input_demand, province_order){
   
   temp_province_order <- 1  # take the value of the province during the iteration
+  temp_status <- NULL
   end = FALSE               # if end is true, while loop ends
   total_offer <- 0          # total_offer initialization
+  
+  list_production <- data.frame(province = c(),
+                                production = c(),
+                                status = c())
   
   while(end == FALSE){
     input_localisation <- province_order[temp_province_order,1]
@@ -102,9 +131,12 @@ get_production_transform <- function(input_product_id, yealds_id, input_demand, 
     {
       end = TRUE
       output_list = list(input_localisation_name, total_offer, input_demand)
-      print(paste0("There is enough in ", input_localisation_name, 
-                    ". Current offer is ",total_offer,
-                    "t while the demand is ",input_demand,"t."))
+      
+      
+      #print(paste0("There is enough in ", input_localisation_name, ". Current offer is ",total_offer,"t while the demand is ",input_demand,"t."))
+      
+      status <- paste0("There is enough in ", input_localisation_name)
+      
     }
     
     else
@@ -112,18 +144,35 @@ get_production_transform <- function(input_product_id, yealds_id, input_demand, 
       if (temp_province_order >= length(province_order[,1]))
       {
         end = TRUE
-        print("There is not enough production in Wallonia for your request.")
-        print(paste0("Demand : ",input_demand," | Cumulated Offer : ",total_offer))
+        #print("There is not enough production in Wallonia for your request.")
+        status <- "There is not enough production in Wallonia for your request."
+        
+        
       }
       else
       {
-        print(paste0("There is not enough in ", input_localisation_name,", let's search in neighboring provinces."))
+        #print(paste0("There is not enough in ", input_localisation_name,", let's search in neighboring provinces."))
+        status <- paste0("There is not enough in ", input_localisation_name)
+        
       }
+      
+      
       
       temp_province_order <- temp_province_order + 1
     }
+    
+    #==========================
+    # Encodage & sauvegarde
+    #==========================
+    
+    temp <- data.frame(name = input_localisation_name,
+                       production = offer,
+                       status = status)
+    
+    list_production <- rbind(list_production, temp)
+    
   }
-  return(total_offer)
+  return(list_production)
 }
 
-#get_production_transform(15,1,9,100,province_order)
+#get_production_transform(15,9,100,province_order)

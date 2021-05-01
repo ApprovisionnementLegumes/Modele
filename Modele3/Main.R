@@ -9,6 +9,7 @@ library(tidyverse)
 library(readxl)
 library(lubridate)
 library(geosphere)
+library(data.table)
 
 
 source("Data definition.R")
@@ -79,20 +80,21 @@ Main = function(input_demand, input_legume, input_code, input_time, input_produc
   temp_province_order <- 1  # take the value of the province during the iteration
   end = FALSE               # if end is true, while loop ends
   total_offer <- 0          # total_offer initialization
+  status <- NULL            # will save the status of the production
   
   #input_localisation <- province_order[temp_province_order,1]
   #input_localisation_name = (provinces %>% filter(id_province == input_localisation))$name
   
   # Request recap :
-  print(paste0("Resquest recap ; searching for ", input_demand, 
-               " t of ", input_production_mode,
-               " ", input_transformation,
-               " ", input_legume, 
-               " in ", province_order[1,3], 
-               " in ", input_time))
+  #print(paste0("Resquest recap ; searching for ", input_demand, 
+  #             " t of ", input_production_mode,
+  #             " ", input_transformation,
+  #             " ", input_legume, 
+  #             " in ", province_order[1,3], 
+  #             " in ", input_time))
     
   #===================
-  # GET THE PRODUCTION
+  # 4. GET THE PRODUCTION
   #===================
     
   # 1. Case of transformed product : get monthly production
@@ -108,7 +110,8 @@ Main = function(input_demand, input_legume, input_code, input_time, input_produc
     
     # 2.1 It is the season
     if(input_time_id %in% harvest_time){
-      print("It is still the season.")                                        # peut-être stocker une variable?
+      #print("It is still the season.")                                 
+      status <- "It is still the season."
       offer <- get_production_fresh(input_product_id, 
                                     yealds_id, 
                                     input_demand, 
@@ -118,7 +121,8 @@ Main = function(input_demand, input_legume, input_code, input_time, input_produc
     
     # 2.2 Not hte season but stocks
     }else if (input_time_id %in% conservation_time){
-      print("It is not the season anymore but there is conservation stocks.")
+      #print("It is not the season anymore but there is conservation stocks.")
+      status <- "It is not the season anymore but there is conservation stocks."
       offer <- get_production_fresh(input_product_id, 
                                     yealds_id, 
                                     input_demand, 
@@ -127,13 +131,18 @@ Main = function(input_demand, input_legume, input_code, input_time, input_produc
                                     conservation_time)
     
     # 2.3 Not the season and no stocks
-    }else{print("It is not the season anymore and there is no more conserved stocks.")}
+    }else{
+      #print("It is not the season anymore and there is no more conserved stocks.")}
+      status <- "It is not the season anymore and there is no more conserved stocks."
     }
 
   
   # 3. Total Offer
   total_offer <- offer
-  return(total_offer)
+  return(c(offer,status))
+  }
 }
 
 Main(input_demand, input_legume, input_code, input_time, input_production_mode, input_transformation)
+
+
