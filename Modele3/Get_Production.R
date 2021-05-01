@@ -31,7 +31,7 @@ get_production <- function(input_product_id, input_localisation, yealds_id){
 # GET PRODUCTION FRESH
 #==============================
 
-get_production_fresh <- function(input_product_id, input_province_id, yealds_id, input_demand, province_order){
+get_production_fresh <- function(input_product_id, yealds_id, input_demand, province_order, harvest_time, conservation_time){
   
   temp_province_order <- 1  # take the value of the province during the iteration
   end = FALSE               # if end is true, while loop ends
@@ -81,7 +81,7 @@ get_production_fresh <- function(input_product_id, input_province_id, yealds_id,
 # GET PRODUCTION TRANSFORMED
 #==============================
 
-get_production_transform <- function(input_product_id, input_province_id, yealds_id, input_demand, province_order){
+get_production_transform <- function(input_product_id, yealds_id, input_demand, province_order){
   
   temp_province_order <- 1  # take the value of the province during the iteration
   end = FALSE               # if end is true, while loop ends

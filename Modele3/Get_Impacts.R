@@ -1,49 +1,119 @@
-get_impacts <- function(input_product_id,production, input_province_id){
-  
-  # look to the purcentage of surface attributed to the product
-  # ex : there is 75% of the carrot surface attributed to the reasoned conventionnal agric.
-  specific_purcent <- (repartition_modes %>% filter(id_product == input_product_id))$"%"
-  
-  # look for the legume of the product
-  legume <- (repartition_modes %>% filter(id_product == input_product_id))$id_legume
-  
-  # calculate the surface 
-  specific_surface <- specific_purcent*(surfaces %>% filter(id_legume == legume,
-                                                            id_province == input_province_id))$surface
-  
-  list_impact = data.frame(name = c(), value = c(), units = c())
-  
-  for (impact_id in impacts[,1]){
-    
-    impact_name <- (impacts %>% filter(id_impact == impact_id))$name
-    impact_units1 <- (impacts %>% filter(id_impact == impact_id))$units1
-    impact_units2 <- (impacts %>% filter(id_impact == impact_id))$units2 
-    impact_value <- (production_impacts %>% filter(id_impact == impact_id,
-                                                   id_product == input_product_id))$value
+get_impacts <-
+  function(input_product_id,
+           production) 
+    {
+    # TEST
+    input_product_id = 15
+    production = 200
     
     
-    print(paste0("Impact on ", impact_name))
     
-    if (impact_units2 == "kg")
-      {
-      impact_value_final <- impact_value*production/1000 #divide by 1000 because production is in t
+    id_surface = (impacts %>% filter(name == "Surface de terre"))$id_impact
+    
+    # calculate the surface
+    specific_surface <-
+      production * ((
+        production_impacts %>% filter(id_product == input_product_id,
+                                      id_impact == id_surface)
+      )$value) / 1000 #divise par 1000 car surface en ha*10-3
+    
+    list_impact = data.frame(name = c(),
+                             value = c(),
+                             units = c())
+    
+    for (impact_id in c(1:length(impacts$id_impact))) {                              # !!!! si les id changent (pas très optimal mais j'ai pas réussi à transformer une colonne de df en liste)
+      
+      #===========================================
+      # EXCEPTION SI IMPACT + RENDEMENT OU SURFACE
+      #===========================================
+      
+      if(impact_id == (impacts %>% filter(name == "Surface de terre"))$id_impact){
+        # do nothing
       }
-    else if (impact_units2 == "ha")
-      {
-      impact_value_final <- impact_value*specific_surface
+      
+      else if(impact_id == (impacts %>% filter(name == "Rendements"))$id_impact){
+        # do nothing
       }
-    else{
-      print("Error, units not found")
+      
+      #===========================================
+      # CALCUL DES IMPACTS
+      #===========================================
+      
+      else{
+      #print(impact_id)
+      impact_value_final <- 0
+      
+      # NAME
+      impact_name <- (impacts %>% filter(id_impact == impact_id))$name
+      
+      # UNITS
+      impact_units1 <-
+        (impacts %>% filter(id_impact == impact_id))$units1
+      
+      impact_units2 <-
+        (impacts %>% filter(id_impact == impact_id))$units2
+      
+      # VALUE
+      impact_value <-
+        (
+          production_impacts %>% filter(id_impact == impact_id,
+                                        id_product == input_product_id)
+        )$value
+      
+      #=============================================
+      # 1. Cas ou l'impact est en unité par kilo
+      
+      if (impact_units2 == "kg")
+      {
+        impact_value_final <- impact_value * production * 1000 #multiply by 1000 because production is in t
+      }
+      
+      #=============================================
+      # 2. Cas ou l'impact est en unité par hectare
+      
+      else if (impact_units2 == "ha")
+      {
+        impact_value_final <- impact_value * specific_surface
+      }
+      
+      #=============================================
+      # 3. Cas ou l'impact est en unité par kilo par jour
+      else if (impact_units2 == "kg.jour")  # cas du stockage
+      {
+        impact_value_final <- 0.00122 * production * 1000                       # Valeur rentrée mannuellement. Automatiser?
+      }
+      
+      #=============================================
+      # EXCEPTIONS
+      #=============================================
+      else{
+        if (impact_name == "DQR"){
+          DQR_id <- (impacts %>% filter(name == "DQR"))$id_impact
+          impact_value_final = (production_impacts %>% filter(id_product == input_product_id,
+                                                              id_impact == DQR_id))$value
+        }
+        
+        else{print(paste0("Error : impact not found. Impact ID is : ",impact_id))}
+      }
+      
+      #=============================================
+      # Encodage et sauvegarde
+      #=============================================
+      temp <- data.frame(name = impact_name,
+                         value = impact_value_final,
+                         units = impact_units1)
+      list_impact <- rbind(list_impact, temp)
+      
+      #print(paste0("The impact on ",impact_name," is ",impact_value_final," ",impact_units1))
+      
+      }
+      
     }
-    
-    temp <- data.frame(name = impact_name, value = impact_value_final, units = impact_units1)
-    list_impact <- rbind(list_impact, temp)
-    print(paste0("The impact on ", impact_name," is ", impact_value_final, " ", impact_units1))
-    
+    return(list_impact)
   }
-  
-  
-  return(list_impact)
-}
 
-test = (get_impacts(15,200,1))
+
+
+
+# TEST
+get_impacts(17, 200)
