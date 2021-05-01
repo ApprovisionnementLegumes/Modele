@@ -17,7 +17,7 @@ source("Get_Production.R")
 source("Get_Province.R")
 #source("Get_Production_Monthly.R")
 source("Inputs.R")
-#source("Get_Impacts.R")
+source("Get_Impacts.R")
 
 
 Main = function(input_demand, input_legume, input_code, input_time, input_production_mode, input_transformation){
@@ -137,12 +137,14 @@ Main = function(input_demand, input_legume, input_code, input_time, input_produc
     }
 
   
-  # 3. Total Offer
-  total_offer <- offer
-  return(c(offer,status))
+  # 3. Outputs
+    impact_final <- get_impacts(input_product_id,input_demand)
+    output <- list(offer, impact_final)
+  return(output)
   }
 }
 
-Main(input_demand, input_legume, input_code, input_time, input_production_mode, input_transformation)
-
+#test <- Main(input_demand, input_legume, input_code, input_time, input_production_mode, input_transformation)
+# pour acceder à l'offre : test[[1]]
+# pour acceder aux impacts : test[[2]]
 
