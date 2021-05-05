@@ -144,7 +144,7 @@ Main = function(input_demand, input_legume, input_code, input_time, input_produc
   }
 }
 
-#test <- Main(input_demand, input_legume, input_code, input_time, input_production_mode, input_transformation)
+# test <- Main(input_demand, input_legume, input_code, input_time, input_production_mode, input_transformation)
 # pour acceder à l'offre : test[[1]]
 # pour acceder aux impacts : test[[2]]
 
