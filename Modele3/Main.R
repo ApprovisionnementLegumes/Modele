@@ -15,7 +15,6 @@ library(data.table)
 source("Data definition.R")
 source("Get_Production.R")
 source("Get_Province.R")
-#source("Get_Production_Monthly.R")
 source("Inputs.R")
 source("Get_Impacts.R")
 
@@ -98,7 +97,7 @@ Main = function(input_demand, input_legume, input_code, input_time, input_produc
   #===================
     
   # 1. Case of transformed product : get monthly production
-  if (input_transformation_id == 1){ 
+  if (input_transformation_id == 1){
     offer <- get_production_transform(input_product_id,
                                       yealds_id, 
                                       input_demand, 
@@ -107,6 +106,7 @@ Main = function(input_demand, input_legume, input_code, input_time, input_produc
     
   # 2. Case of fresh product : divide production by harvest and conservation time
   else if (input_transformation_id == 2){
+    
     
     # 2.1 It is the season
     if(input_time_id %in% harvest_time){
@@ -134,17 +134,30 @@ Main = function(input_demand, input_legume, input_code, input_time, input_produc
     }else{
       #print("It is not the season anymore and there is no more conserved stocks.")}
       status <- "It is not the season anymore and there is no more conserved stocks."
+      offer <- 0
     }
+  }
 
   
   # 3. Outputs
-    impact_final <- get_impacts(input_product_id,input_demand)
-    output <- list(offer, impact_final)
+    
+  impact_final <- get_impacts(input_product_id,input_demand)
+  output <- list(offer, impact_final)
   return(output)
   }
-}
 
-# test <- Main(input_demand, input_legume, input_code, input_time, input_production_mode, input_transformation)
+
+test1 <- Main(input_demand, input_legume, input_code, input_time, input_production_mode, input_transformation)
+test1
+
+#test2 <- Main(input_demand = 400,
+#             input_legume = "carrot",
+#             input_code = 1348,
+#             input_time = "may",
+#             input_transformation = "fresh",
+#             input_production_mode = "organic"
+
+#test <- Main(10000000000000000000000000000000, input_legume, input_code, input_time, input_production_mode, input_transformation)
 # pour acceder à l'offre : test[[1]]
 # pour acceder aux impacts : test[[2]]
 

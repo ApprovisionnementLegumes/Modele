@@ -99,13 +99,13 @@ get_production_fresh <- function(input_product_id, yealds_id, input_demand, prov
   return(list_production)
 }
 
-get_production_fresh(15,9,100,province_order, harvest_time, conservation_time)
+
 
 #==============================
 # GET PRODUCTION TRANSFORMED
 #==============================
 
-get_production_transform <- function(input_product_id, yealds_id, input_demand, province_order){
+get_production_transform <- function(input_product_id, yealds_id, input_demand, province_order, harvest_time, conservation_time){
   
   temp_province_order <- 1  # take the value of the province during the iteration
   temp_status <- NULL
@@ -175,4 +175,22 @@ get_production_transform <- function(input_product_id, yealds_id, input_demand, 
   return(list_production)
 }
 
-#get_production_transform(15,9,100,province_order)
+#========================================
+# TEST
+#========================================
+
+#get_production(1,1,9)
+
+#get_production_fresh(input_demand = 10000,
+#                     input_product_id =  input_product_id,
+#                     province_order = province_order,
+#                     yealds_id = 9,
+#                     harvest_time = harvest_time,
+#                     conservation_time = conservation_time)
+
+#get_production_transform(input_demand = 10000,
+#                         input_product_id =  1,
+#                         province_order = province_order,
+#                         yealds_id = 9,
+#                         harvest_time = harvest_time,
+#                         conservation_time = conservation_time)

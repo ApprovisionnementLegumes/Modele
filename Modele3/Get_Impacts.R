@@ -3,8 +3,8 @@ get_impacts <-
            production) 
     {
     # TEST
-    input_product_id = 15
-    production = 200
+    #input_product_id = 15
+    #production = 200
     
     
     
@@ -15,11 +15,18 @@ get_impacts <-
       production * ((
         production_impacts %>% filter(id_product == input_product_id,
                                       id_impact == id_surface)
-      )$value) / 1000 #divise par 1000 car surface en ha*10-3
+      )$value) 
+    # dans la DB, la surface par qtt est en ha*10-3 par kilo. 
+    # En multipliant par la demande en tonnes, 
+    # on obtient directement la surface spécifique en ha
+    
+    print(paste0("Specific surface : ",specific_surface," ha"))
     
     list_impact = data.frame(name = c(),
                              value = c(),
-                             units = c())
+                             units = c(),
+                             incertitude = c()
+                             )
     
     for (impact_id in c(1:length(impacts$id_impact))) {                              # !!!! si les id changent (pas très optimal mais j'ai pas réussi à transformer une colonne de df en liste)
       
@@ -101,7 +108,8 @@ get_impacts <-
       #=============================================
       temp <- data.frame(name = impact_name,
                          value = impact_value_final,
-                         units = impact_units1)
+                         units = impact_units1,
+                         incertitude = (impacts %>% filter(name == impact_name))$incertitude)
       list_impact <- rbind(list_impact, temp)
       
       #print(paste0("The impact on ",impact_name," is ",impact_value_final," ",impact_units1))
@@ -109,11 +117,11 @@ get_impacts <-
       }
       
     }
-    return(list_impact)
+  return(list_impact)
   }
 
 
 
 
 # TEST
-get_impacts(17, 200)
+get_impacts(17,200)
