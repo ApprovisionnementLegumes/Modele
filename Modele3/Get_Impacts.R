@@ -34,11 +34,11 @@ get_impacts <-
       # EXCEPTION SI IMPACT + RENDEMENT OU SURFACE
       #===========================================
       
-      if(impact_id == (impacts %>% filter(name == "Surface de terre"))$id_impact){
+      #if(impact_id == (impacts %>% filter(name == "Surface de terre"))$id_impact){
         # do nothing
-      }
+      #}
       
-      else if(impact_id == (impacts %>% filter(name == "Rendements"))$id_impact){
+      if(impact_id == (impacts %>% filter(name == "Rendements"))$id_impact){
         # do nothing
       }
       
