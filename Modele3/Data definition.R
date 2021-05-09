@@ -46,6 +46,7 @@ products <- read_xlsx(pathway, sheet="Product")
 ########################################
 
 impact_data <- merge(production_impacts, impacts, by.x = "id_impact", by.y = "id_impact")
+impact_data <- merge(impact_data, products, by.x = "id_product",by.y = "id_product")
 
 
 
