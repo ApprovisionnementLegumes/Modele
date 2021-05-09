@@ -89,5 +89,6 @@ Get_Means = function(){
   return(list(impact_means,impact_means2))
 }
 
-#Get_Means()
-
+# Get_Means()
+# -> retourne une liste dont [[1]] est la moyenne des valeurs des impacts par mode et
+# [[2]] est la moyenne des valeurs des impacts par transformation
