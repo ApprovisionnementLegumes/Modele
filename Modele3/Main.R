@@ -147,6 +147,9 @@ Main = function(input_demand, input_legume, input_code, input_time, input_produc
   }
 
 
+#=================================
+# TEST
+
 test1 <- Main(input_demand, input_legume, input_code, input_time, input_production_mode, input_transformation)
 test1
 

@@ -1,6 +1,6 @@
-input_demand <- 1000
-input_legume <- "carrot"
+input_demand <- 2000
+input_legume <- "pea"
 input_code <- 1348
-input_time <- "may"
-input_production_mode <- "organic"
-input_transformation <- "fresh"
+input_time <- "july"
+input_production_mode <- "conventionnal"
+input_transformation <- "processed"
