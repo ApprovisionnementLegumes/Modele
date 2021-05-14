@@ -1,0 +1,13 @@
+name: Modele2
+title: Modele2
+username:
+account: charlolegossbo
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 3987502
+bundleId: 4596125
+url: https://anaprom.shinyapps.io/Modele2/
+when: 1620945723.8973
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: ~$Database projet.xlsx|13-18FOUAD2.pdf|fct py.ipynb|LeinonenEggs.pdf|Screenshot_3.png|Untitled.R|.ipynb_checkpoints/fct py-checkpoint.ipynb|.ipynb_checkpoints/Get_Province-checkpoint.R|.ipynb_checkpoints/Main-checkpoint.R

@@ -1,0 +1,121 @@
+---
+title: "Rapport Anaprom.Rmd"
+author: "Anaprom"
+output: html_document
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r oneshot_install, eval=FALSE, echo=FALSE}
+install.packages(c("tidyverse","stringr","tidytext","igraph","ggraph","widyr"))
+```
+
+```{r load_packages, echo=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)      # data manipulation & plotting
+library(stringr)        # text cleaning and regular expressions
+library(tidytext)       # provides additional text mining functions
+
+library(harrypotter)    # provides the first seven novels of the Harry Potter series
+library(igraph)         # Network creations
+library(ggraph)         # ggplot network visualisation
+library(widyr)          # words correlations
+
+color_tile_mean = function (...) {
+     
+      formatter("span", style = function(x) {
+        style(display = "block",
+              padding = "0 4px", 
+              `border-radius` = "4px", 
+              `background-color` = ifelse(df[[1]]$status_id == 0 , "#ff7f7f", "#ADFF2F"))
+      })}
+
+```
+## Paramètres en entrée:
+## 
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+param = c('Demande', 'Code Postal' , "Legume", "Mode de production", "Mois", "Transformation")
+valeur = c(paste(input$input_demand, "Tonnes"), input$input_code, input$input_legume,
+           input$input_production_mode ,input$input_time, input$input_transformation)
+
+df = data.frame(Paramètre = param, Valeur = valeur)
+formattable(df, 
+            align =c("l","l"), 
+            list(`Paramètre` = formatter(
+              "span", style = ~ style(color = "grey",font.weight = "bold")) 
+))
+
+```
+
+## Répartition de l'offre:
+## 
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+df = Main(input$input_demand, input$input_legume, input$input_code, input$input_time,
+                     input$input_production_mode, input$input_transformation)
+
+if("status_id" %in% colnames(df[[1]]))
+    {
+      tablebilan = df[[1]]%>%select(-c("status_id"))
+      tablebilan%>%mutate(
+        status = color_tile_mean()(status))%>%
+        kable("html", escape = F) %>%
+        kable_styling("hover", full_width = T)%>%
+        column_spec(1, bold = TRUE, color = "#565656")
+}
+
+
+tdf = df[[2]] 
+      tdf$normalized = sqrt(sqrt(tdf$impact_relatif/max(tdf$impact_relatif)))
+      
+tableimpact = tdf%>%
+        
+        mutate(
+          value = cell_spec(value, color = spec_color(normalized, end = 0.9, option = "D", direction =-1),
+                            bold = T))%>%
+        mutate(
+          impact_relatif = cell_spec(impact_relatif, color = spec_color(normalized, end = 0.9, option = "D", direction =-1),
+                                     bold = T))%>%
+        select(-c("value_base", "means", "normalized")) %>%
+        kable("html", escape = F) %>%
+        kable_styling("hover", full_width = T) %>%
+        row_spec(13, bold = TRUE, italic = FALSE, font_size = 18)%>%
+        column_spec(1, bold = TRUE, color = "#565656")%>%
+        column_spec(4, color = spec_color(tdf$incertitude, end = 0.9, option = "D", direction =-1))
+      
+
+#tablebilan
+```
+##
+##### En rouge : votre demande
+##### En violet : votre excès (s'il y en a un)
+
+## 
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ndf = get_dispo(input$input_demand, input$input_legume, input$input_code,
+                                    input$input_time, input$input_production_mode,
+                                    input$input_transformation)
+demand = input$input_demand
+
+hchart(ndf,"pie", hcaes(x = names, y = value), name = "Offer",
+             center = list("300", "170"), size = 350)%>%
+        
+        hc_add_series(data = list(sum(ndf$demand), sum(ndf$value)-sum(ndf$demand)),
+                      name=c("Demand"),type = "pie",
+                      stack = "Values", colors = c('#FF0000', '#00ADFF2F'), 
+                      dataLabels = list(enabled = FALSE), size = 180, center = c("300", "170"))%>%
+        
+        hc_add_series(data = list(demand - sum(ndf$value), 3*sum(ndf$value)),
+                      name=list("Exces"),type = "pie",
+                      stack = "Values", colors = c('#BA55D3', '#00000000'), 
+                      dataLabels = list(enabled = FALSE), size = 80, borderColor = "white", borderWidth = 0,
+                      stack= "value", center = c("300", "170"))
+```
+
+## Votre bilan environnemental
+## 
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+tableimpact
+```
